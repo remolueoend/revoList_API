@@ -1,0 +1,16 @@
+{
+  "name": "revoList_API",
+  "version": "1.0.0",
+  "description": "API interface for revoList",
+  "main": "boot.js",
+  "scripts": {
+    "start": "node boot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "revoList",
+    "API"
+  ],
+  "author": "Remo Zumsteg (zumstrem@students.zhaw.ch)",
+  "license": "ISC"
+}
