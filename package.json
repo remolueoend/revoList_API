@@ -12,5 +12,13 @@
     "API"
   ],
   "author": "Remo Zumsteg (zumstrem@students.zhaw.ch)",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/remolueoend/revoList_API.git"
+  },
+  "bugs": {
+    "url": "https://github.com/remolueoend/revoList_API/issues"
+  },
+  "homepage": "https://github.com/remolueoend/revoList_API"
 }
