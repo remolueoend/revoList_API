@@ -10,13 +10,9 @@ var RestController = require('./RestController'),
     error = require('../lib/http-error');
 
 var UserController = inherit(RestController,
-    function(context, req, res){
-        RestController.call(this, context, req, res);
+    function(context){
+        RestController.call(this, context);
     }
 );
-
-override(UserController, "remove", function(base, id){
-    throw error.methodNotAllowed("DELETE on 'user' is not allowed.");
-});
 
 module.exports = UserController;

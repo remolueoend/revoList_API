@@ -4,26 +4,28 @@
 
 'use strict';
 
-function RestController(context, req, res){
+var monk = require('../lib/action-result').monk;
+
+function RestController(context){
     this.context = context;
-    this.req = req;
-    this.res = res;
+    this.d = context.d;
+    this.db = context.db;
 }
 RestController.prototype = {
     get: function(id){
-        return {method: "get", entity: this.context.entityName};
+        return monk(this.db(this.context.entityName).findById(id));
     },
     getAll: function(query){
-        var x = "x";
+        return monk(this.db(this.context.entityName).find());
     },
     update: function(id, body){
-        return {method: "post", entity: this.context.entityName};
+        return monk(this.db(this.context.entityName).updateById(id, body));
     },
     create: function(body){
-        return {method: "put", entity: this.context.entityName};
+        return monk(this.db(this.context.entityName).insert(body));
     },
     remove: function(id){
-        return {method: "delete", entity: this.context.entityName};
+        return monk(this.db(this.context.entityName).remove({_id: id}));
     }
 };
 

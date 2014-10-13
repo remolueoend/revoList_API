@@ -1,4 +1,10 @@
 #!/usr/bin/env node
+
+/**
+ * Entry script to boot the API application.
+ * @type {*|exports}
+ */
+
 var debug = require('debug')('revoList_API');
 var app = require('../app.js');
 
