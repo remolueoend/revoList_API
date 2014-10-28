@@ -28,6 +28,7 @@
     "deferred": "^0.7.1",
     "dynamic-routes": "https://github.com/remolueoend/dynamic-routes/tarball/master",
     "express": "~4.9.0",
+    "fbgraph": "^0.3.0",
     "googleapis": "https://github.com/google/google-api-nodejs-client/tarball/master",
     "jade": "~1.6.0",
     "mongodb": "^1.4.18",
