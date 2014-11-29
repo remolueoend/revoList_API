@@ -4,10 +4,14 @@
 
 'use strict';
 
+var youtube = require('../contentProviders/youtube');
+
 module.exports = require('./BaseController').inherit({
 
-    get: function(query){
-
+    getAll: function(query, deferred){
+        youtube(query.q).then(function(data){
+            deferred.resolve(data);
+        });
     }
 
 });

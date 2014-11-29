@@ -35,6 +35,7 @@
     "monk": "^0.9.0",
     "morgan": "~1.3.0",
     "node-inherit": "https://github.com/remolueoend/oo-node/tarball/master",
-    "serve-favicon": "~2.1.3"
+    "serve-favicon": "~2.1.3",
+    "youtube-api": "^0.3.1"
   }
 }
