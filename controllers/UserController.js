@@ -4,15 +4,15 @@
 
 'use strict';
 
-var RestController = require('./RestController'),
-    inherit = require('node-inherit').inherit,
-    override = require('node-inherit').override,
-    error = require('../lib/http-error');
+var monk = require('../lib/action-result').monk,
+    graph = require('fbgraph');
 
-var UserController = inherit(RestController,
-    function(context){
-        RestController.call(this, context);
+module.exports = require('./RestController').inherit({
+
+    me: function(deferred){
+        return monk(this.db('user').findOne({
+            id: this.context.req.user.id
+        }));
     }
-);
 
-module.exports = UserController;
+});

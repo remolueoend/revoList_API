@@ -4,18 +4,13 @@
 
 'use strict';
 
-var RestController = require('./RestController'),
-    inherit = require('node-inherit').inherit,
-    override = require('node-inherit').override;
+var monk = require('../lib/action-result').monk;
 
-var PlaylistController = inherit(RestController, function(context){
-    RestController.call(this, context);
+module.exports = require('./BaseController').inherit({
+
+    search: function(query){
+        var regex = new RegExp('.*' + query.q + '.*');
+        return monk(this.db('playlist').find({title: regex}));
+    }
+
 });
-
-override(PlaylistController.prototype, "delete", function(base){
-    var result = base();
-    result.override = true;
-    return result;
-});
-
-module.exports = PlaylistController;

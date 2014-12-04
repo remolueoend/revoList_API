@@ -4,13 +4,20 @@
 
 'use strict';
 
-var youtube = require('../contentProviders/youtube');
+var youtube = require('../contentProviders/youtube'),
+    soundcloud = require('../contentProviders/soundcloud'),
+    defer = require('deferred');
 
 module.exports = require('./BaseController').inherit({
 
     getAll: function(query, deferred){
-        youtube(query.q).then(function(data){
-            deferred.resolve(data);
+        var all = defer(youtube.query(query.q), soundcloud.query(query.q));
+        all.then(function(result){
+            var r = [];
+            for(var i = 0; i < result.length; i++){
+                r = r.concat(result[i]);
+            }
+            deferred.resolve(r);
         });
     }
 

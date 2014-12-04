@@ -8,21 +8,29 @@ var youtube = require('youtube-api');
 var deferred = require('deferred');
 var apiKey = 'AIzaSyBP-_HFBSZkVtAVC6dByv8ZeWTrJfiYC2s';
 
-function query(q){
-    var d = deferred();
-    youtube.search.list({
-        part: 'snippet,id',
-        q: q,
-        key: apiKey
-    }, function(err, resp){
-        if(err){
-            d.reject(err);
-        }else{
-            d.resolve(resp.items);
-        }
-    });
+module.exports = {
+    query: function(q){
+        var d = deferred();
+        youtube.search.list({
+            part: 'snippet,id',
+            q: q,
+            key: apiKey
+        }, function(err, resp){
+            if(err){
+                d.reject(err);
+            }else{
+                d.resolve(resp.items.map(function(i){
+                    return {
+                        id: i.id.videoId,
+                        title: i.snippet.title,
+                        author: i.snippet.channelTitle,
+                        thumbnail: i.snippet.thumbnails.medium.url,
+                        provider: 'youtube'
+                    };
+                }));
+            }
+        });
 
-    return d.promise;
-}
-
-module.exports = query;
+        return d.promise;
+    }
+};

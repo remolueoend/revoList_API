@@ -36,6 +36,8 @@ app.all('*', function(req, res, next){
 
 app.all('/oauth/token', app.oauth.grant());
 
+app.use(require('./lib/actionQuery')());
+
 // Registers the API REST route and
 // handles all valid API REST requests:
 restRouter(app);

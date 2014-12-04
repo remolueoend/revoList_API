@@ -14,6 +14,7 @@ module.exports = {
         d('oauth_access_tokens').findOne({ access_token: bearerToken })
             .on("success", function(token){
                 if(token){
+                    token.userId = token.user_id.id;
                     callback(null, token)
                 }else{
                     callback();
@@ -101,7 +102,7 @@ module.exports = {
                                         callback(false, {id: username });
                                     });
                             }else{
-                                callback(false, data);
+                                callback(false, {id: data.id});
                                 d.close();
                             }
 
