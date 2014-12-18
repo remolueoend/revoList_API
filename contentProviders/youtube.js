@@ -14,7 +14,8 @@ module.exports = {
         youtube.search.list({
             part: 'snippet,id',
             q: q,
-            key: apiKey
+            key: apiKey,
+            maxResults: 15
         }, function(err, resp){
             if(err){
                 d.reject(err);

@@ -5,14 +5,27 @@
 'use strict';
 
 var monk = require('../lib/action-result').monk,
-    graph = require('fbgraph');
+    inherit = require('node-inherit').inherit,
+    RestController = require('./RestController');
 
+module.exports = inherit(RestController, function(context){
+    RestController.call(this, context);
+}, {
+    me: function(){
+        return monk(this.db('user').findOne({
+            id: this.context.req.user.id
+        }));
+    }
+});
+
+/*
 module.exports = require('./RestController').inherit({
 
-    me: function(deferred){
+    me: function(){
         return monk(this.db('user').findOne({
             id: this.context.req.user.id
         }));
     }
 
 });
+*/

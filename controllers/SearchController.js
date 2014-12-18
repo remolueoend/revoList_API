@@ -6,8 +6,26 @@
 
 var youtube = require('../contentProviders/youtube'),
     soundcloud = require('../contentProviders/soundcloud'),
-    defer = require('deferred');
+    defer = require('deferred'),
+    inherit = require('node-inherit').inherit,
+    BaseController = require('./BaseController');
 
+module.exports = inherit(BaseController, function(context){
+    BaseController.call(this, context);
+}, {
+    getAll: function(query, deferred){
+        var all = defer(youtube.query(query.q), soundcloud.query(query.q));
+        all.then(function(result){
+            var r = [];
+            for(var i = 0; i < result.length; i++){
+                r = r.concat(result[i]);
+            }
+            deferred.resolve(r);
+        });
+    }
+});
+
+/*
 module.exports = require('./BaseController').inherit({
 
     getAll: function(query, deferred){
@@ -22,3 +40,4 @@ module.exports = require('./BaseController').inherit({
     }
 
 });
+*/

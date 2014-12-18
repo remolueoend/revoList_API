@@ -14,6 +14,7 @@ module.exports = {
         d('oauth_access_tokens').findOne({ access_token: bearerToken })
             .on("success", function(token){
                 if(token){
+                    token.user = token.user_id;
                     token.userId = token.user_id.id;
                     callback(null, token)
                 }else{
@@ -29,6 +30,13 @@ module.exports = {
     },
 
     getClient: function(clientId, clientSecret, callback){
+
+        // This code allows access to every app providing the following client/secret.
+        // At the same time its a huge security-hole, huehue...
+        if(clientId === 'revoList_webApp_client' && clientSecret === 'revoList_webApp_secret'){
+            callback(null, { clientId: clientId, clientSecret: clientSecret });
+            return;
+        }
         var d = db();
         d('oauth_client').findOne({client_id: clientId})
             .on("success", function(client){
@@ -96,13 +104,13 @@ module.exports = {
                     .on('success', function(data){
                         if(data){
                             if(data.lastName !== resp.last_name || data.firstName !== resp.first_name){
-                                d('user').update({id: username}, {id: username, lastName: resp.last_name, firstName: resp.first_name})
+                                d('user').update({_id: data._id}, {id: username, lastName: resp.last_name, firstName: resp.first_name})
                                     .complete(function(){
                                         d.close();
                                         callback(false, {id: username });
                                     });
                             }else{
-                                callback(false, {id: data.id});
+                                callback(false, data);
                                 d.close();
                             }
 

@@ -16,7 +16,8 @@ module.exports = {
             url: server + '/tracks.json',
             qs: {
                 q: q,
-                consumer_key: clientKey
+                consumer_key: clientKey,
+                order: 'hotness'
             }
         }, function(error, response, body){
             if(error){
@@ -28,7 +29,7 @@ module.exports = {
                 }else{
                     deferred.resolve(b.map(function(i){
                         return {
-                            id: i.id,
+                            id: i.id.toString(),
                             title: i.title,
                             author: i.user.username,
                             thumbnail: i.artwork_url,

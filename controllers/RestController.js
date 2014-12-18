@@ -5,9 +5,32 @@
 'use strict';
 
 var monk = require('../lib/action-result').monk,
-    inherit = require('node-inherit').inherit;
+    inherit = require('node-inherit').inherit,
+    BaseController = require('./BaseController');
 
+var RestController = inherit(BaseController, function(context){
+    BaseController.call(this, context);
+}, {
+    get: function(id){
+        return monk(this.db(this.context.entityName).findById(id));
+    },
+    getAll: function(actionQuery){
+        return monk(this.db(this.context.entityName).find(actionQuery));
+    },
+    update: function(id, body){
+        return monk(this.db(this.context.entityName).updateById(id, body));
+    },
+    create: function(body){
+        return monk(this.db(this.context.entityName).insert(body));
+    },
+    remove: function(id){
+        return monk(this.db(this.context.entityName).remove({_id: id}));
+    }
+});
+
+/*
 var RestController = require('./BaseController').inherit({
+
     get: function(id){
         return monk(this.db(this.context.entityName).findById(id));
     },
@@ -31,5 +54,7 @@ RestController.inherit = function(prototype){
         RestController.call(this, context);
     }, prototype);
 };
+
+*/
 
 module.exports = RestController;

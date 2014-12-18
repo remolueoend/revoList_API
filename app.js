@@ -6,8 +6,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var app = express();
 var error = require('./lib/http-error');
-var restRouter = require('./lib/routing/rest-routing');
 var oauthserver = require('node-oauth2-server');
+var rest = require('./lib/routing/rest')();
+var c = require('./lib/constants');
+var converters = require('./models/converters');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -20,7 +22,8 @@ app.use(cookieParser());
 app.oauth = oauthserver({
     model: require('./auth/model'),
     grants: ['password'],
-    debug: true
+    debug: true,
+    accessTokenLifetime: 3600 * 24
 });
 
 app.all('*', function(req, res, next){
@@ -35,12 +38,26 @@ app.all('*', function(req, res, next){
 });
 
 app.all('/oauth/token', app.oauth.grant());
+app.all('*', app.oauth.authorise());
 
 app.use(require('./lib/actionQuery')());
 
-// Registers the API REST route and
-// handles all valid API REST requests:
-restRouter(app);
+
+/**
+ * REST route definitions
+ */
+// Playlist
+app.use('/playlist/byTrack/:provider/:trackId', rest({entity: 'playlist', action: 'byTrack'}));
+//app.use('/playlist/:id/addTrack', rest({entity: 'playlist', action: 'addTrack'}));
+//app.use('playlist/:id/removeTrack', rest({entity: 'playlist', action: 'removeTrack'}));
+//app.use('/playlist?', rest({entity: 'playlist'}, [converters.ownerConverter]));
+
+// Defaults
+app.use('/:' + c.entityParamName + '/:' + c.idParamName + '/:' + c.actionParamName, rest());
+app.use('/:' + c.entityParamName + '/:' + c.idParamName + '?', rest(null, [converters.idConverter, converters.ownerConverter]));
+
+
+
 
 
 app.use(app.oauth.errorHandler());
