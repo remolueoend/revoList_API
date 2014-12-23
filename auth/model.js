@@ -103,8 +103,8 @@ module.exports = {
                 d('user').findOne({id: username})
                     .on('success', function(data){
                         if(data){
-                            if(data.lastName !== resp.last_name || data.firstName !== resp.first_name){
-                                d('user').update({_id: data._id}, {id: username, lastName: resp.last_name, firstName: resp.first_name})
+                            if(data.lastName !== resp.last_name || data.firstName !== resp.first_name || !data.fullName){
+                                d('user').update({_id: data._id}, {id: username, lastName: resp.last_name, firstName: resp.first_name, fullName: resp.first_name + ' ' + resp.last_name})
                                     .complete(function(){
                                         d.close();
                                         callback(false, {id: username });

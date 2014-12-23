@@ -55,7 +55,7 @@ module.exports = inherit(RestController, function(context){
      * @returns {*}
      */
     my: function(req){
-        return monk(this.db('playlist').find({ owner: req.user._id }).sort({likesCount: 1}));
+        return monk(this.db('playlist').find({ owner: req.user._id }, {sort: {likesCount: -1}}));
     },
 
     /**

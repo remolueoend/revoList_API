@@ -30,6 +30,17 @@ module.exports = inherit(RestController, function(context){
      * @returns {*}
      */
     likes: function(id){
-        return monk(this.db('playlist').find({likes: id}));
+        return monk(this.db('playlist').find({likes: id}, {sort: {likesCount: -1}}));
+    },
+
+    /**
+     * Returns a collection of users whose full name match the given query.
+     * @url GET /user/search?q=QUERY
+     * @param query
+     * @returns {*}
+     */
+    search: function(query){
+        var regex = new RegExp('.*' + decodeURI(query.q) + '.*', "i");
+        return monk(this.db('user').find({fullName: regex}));
     }
 });
