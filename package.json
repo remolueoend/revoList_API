@@ -2,9 +2,9 @@
   "name": "revoList_API",
   "version": "1.0.0",
   "description": "API interface for revoList",
-  "main": "boot.js",
+  "main": "bin/www",
   "scripts": {
-    "start": "node boot.js",
+    "start": "node bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
