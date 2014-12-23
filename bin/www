@@ -1,20 +1,18 @@
 #!/usr/bin/env node
 
-/**
- * Entry script to boot the API application.
- * @type {*|exports}
- */
-
 var debug = require('debug')('revoList_API'),
-    app = require('../app.js'),
+    app = require('../app'),
     colors = require('colors');
 
+var ipAddress = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var port = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_PORT || 2000;
 
-app.set('port', process.env.PORT || 2000);
+app.set('port', port);
 
-var server = app.listen(app.get('port'), function() {
-  debug('Express server listening on port ' + server.address().port);
+var server = app.listen(app.get('port'), ipAddress, function() {
+    debug('Express server listening on ' + server.address().address + ':' + server.address().port);
 
-  console.info(('revoList API started on port ' + server.address().port + ' and waiting for incoming requests.').toString().green);
-  console.info('Terminate this process to shutdown revoList API.'.yellow);
+    console.info(('revoList API started on ' + server.address().address + ':' + server.address().port + ' and waiting for incoming requests.').toString().green);
+    console.info('Terminate this process to shutdown revoList API.'.yellow);
 });
+
