@@ -26,6 +26,8 @@ app.oauth = oauthserver({
     accessTokenLifetime: 3600 * 24
 });
 
+// Return 'Access-Control-Allow-' headers for each incoming requests.
+// If the request method is 'OPTIONS', return an empty response, else call next middleware:
 app.all('*', function(req, res, next){
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Authorization");
@@ -37,28 +39,36 @@ app.all('*', function(req, res, next){
     }
 });
 
+// Register route for OAuth2 token interface:
 app.all('/oauth/token', app.oauth.grant());
+
+// Check Authentication for each incoming request:
 app.all('*', app.oauth.authorise());
 
+// This middleware prepares the request query which is used by several actions.
+// This middleware must be called after the OAuth2 authentication!
 app.use(require('./lib/actionQuery')());
 
 
 /**
  * REST route definitions
  */
-// Playlist
+// Playlist routes
+// ALL /playlist/byTrack/PROVIDER/TRACK_ID
 app.use('/playlist/byTrack/:provider/:trackId', rest({entity: 'playlist', action: 'byTrack'}));
-//app.use('/playlist/:id/addTrack', rest({entity: 'playlist', action: 'addTrack'}));
-//app.use('playlist/:id/removeTrack', rest({entity: 'playlist', action: 'removeTrack'}));
-//app.use('/playlist?', rest({entity: 'playlist'}, [converters.ownerConverter]));
 
 // Defaults
-app.use('/:' + c.entityParamName + '/:' + c.idParamName + '/:' + c.actionParamName, rest());
+// ALL /ENTITY/ID/ACTION
+app.use('/:' + c.entityParamName + '/:' + c.idParamName + '/:' + c.actionParamName, rest(null, [converters.idConverter]));
+// ALL ENTITY/ID|ACTION
 app.use('/:' + c.entityParamName + '/:' + c.idParamName + '?', rest(null, [converters.idConverter, converters.ownerConverter]));
 
 
-
-
+/**
+ * Error handling
+ * If a request was not handled by any other middleware before,
+ * there must be an error..
+ */
 
 app.use(app.oauth.errorHandler());
 
@@ -68,10 +78,8 @@ app.use(function(err, req, res, next) {
     next(err);
 });
 
-// error handlers
-
-// production error handler
-// no stacktraces leaked to user
+// Final error handler.
+// Returns an JSONfied error object to the client.
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.json({
