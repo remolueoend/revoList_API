@@ -2,9 +2,10 @@
 
 var debug = require('debug')('revoList_API'),
     app = require('../app'),
-    colors = require('colors');
+    colors = require('colors'),
+    ip = require('ip');
 
-var ipAddress = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var ipAddress = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || ip.address();
 var port = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_PORT || 2000;
 
 app.set('port', port);

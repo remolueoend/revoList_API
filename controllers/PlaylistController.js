@@ -195,6 +195,10 @@ module.exports = inherit(RestController, function(context){
         });
     },
 
+    remove: function(id){
+        return monk(this.db('playlist').remove({_id: id}));
+    },
+
     /**
      * Returns if a playlist with the given id is owned by the currently authenticated user.
      * This method should not be called by a client directly.
