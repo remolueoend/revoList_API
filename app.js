@@ -86,7 +86,8 @@ app.use(function(err, req, res, next) {
         error: {
             status: err.status,
             message: err.message,
-            stack: app.get('env') === 'development' ? err.stack: undefined,
+            stack: err.stack,
+            //stack: app.get('env') === 'development' ? err.stack: undefined,
             validation: err.validationErros
         }
     });
