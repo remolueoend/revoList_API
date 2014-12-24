@@ -28,7 +28,7 @@ module.exports = {
                         thumbnail: i.snippet.thumbnails.medium.url,
                         provider: 'youtube'
                     };
-                }));
+                }).filter(function(i){ return typeof i.id !== 'undefined' }));
             }
         });
 
