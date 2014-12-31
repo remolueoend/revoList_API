@@ -30,11 +30,22 @@ module.exports = inherit(RestController, function(context){
      * @url POST /playlist
      * @param body
      * @param req
+     * @param user
      * @returns {*}
      */
-    create: function(body, req){
-        body.owner = req.user._id;
-        return monk(this.db('playlist').insert(body));
+    create: function(body, req, user){
+        body.owner = user._id;
+        var _this = this;
+        this.db('playlist').findOne({owner: user._id, title: body.title}).success(function(p){
+            if(p){
+                _this.context.modelState.addError('title', 'There is already a playlist with the same title.');
+                _this.context.d.reject();
+            }else{
+                _this.db('playlist').insert(body).success(function(p){
+                    _this.context.d.resolve(p);
+                });
+            }
+        });
     },
 
     /**
@@ -156,11 +167,18 @@ module.exports = inherit(RestController, function(context){
      * @param id
      * @param actionQuery
      */
-    changeTitle: function(id, actionQuery){
+    changeTitle: function(id, actionQuery, user){
         var _this = this;
         this.isOwnPlaylist(id).then(function(){
-            _this.db('playlist').update({_id: id}, { $set: { title: actionQuery.title } }).success(function(){
-                _this.context.d.resolve();
+            _this.db('playlist').findOne({_id: {$ne: id}, owner: user._id, title: actionQuery.title}).success(function(p){
+                if(p){
+                    _this.context.modelState.addError('title', 'There is already a playlist with the same title.');
+                    _this.context.d.reject();
+                }else{
+                    _this.db('playlist').update({_id: id}, { $set: { title: actionQuery.title } }).success(function(){
+                        _this.context.d.resolve();
+                    });
+                }
             });
         });
     },
