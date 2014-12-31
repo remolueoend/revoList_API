@@ -115,7 +115,7 @@ module.exports = {
                             }
 
                         }else{
-                            d('user').insert({id: username, lastName: resp.last_name, firstName: resp.first_name})
+                            d('user').insert({id: username, lastName: resp.last_name, firstName: resp.first_name, fullName: resp.first_name + ' ' + resp.last_name})
                                 .on('success', function(data){
                                     callback(null, data);
                                 })
