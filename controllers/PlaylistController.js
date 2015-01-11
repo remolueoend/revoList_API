@@ -168,6 +168,10 @@ module.exports = inherit(RestController, function(context){
      * @param actionQuery
      */
     changeTitle: function(id, actionQuery, user){
+        if(!actionQuery.title || actionQuery.title.length === 0){
+            this.context.modelState.addError('title', 'A title is required.');
+            this.context.d.reject();
+        }
         var _this = this;
         this.isOwnPlaylist(id).then(function(){
             _this.db('playlist').findOne({_id: {$ne: id}, owner: user._id, title: actionQuery.title}).success(function(p){
