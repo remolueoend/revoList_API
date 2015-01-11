@@ -171,20 +171,21 @@ module.exports = inherit(RestController, function(context){
         if(!actionQuery.title || actionQuery.title.length === 0){
             this.context.modelState.addError('title', 'A title is required.');
             this.context.d.reject();
-        }
-        var _this = this;
-        this.isOwnPlaylist(id).then(function(){
-            _this.db('playlist').findOne({_id: {$ne: id}, owner: user._id, title: actionQuery.title}).success(function(p){
-                if(p){
-                    _this.context.modelState.addError('title', 'There is already a playlist with the same title.');
-                    _this.context.d.reject();
-                }else{
-                    _this.db('playlist').update({_id: id}, { $set: { title: actionQuery.title } }).success(function(){
-                        _this.context.d.resolve();
-                    });
-                }
+        }else{
+            var _this = this;
+            this.isOwnPlaylist(id).then(function(){
+                _this.db('playlist').findOne({_id: {$ne: id}, owner: user._id, title: actionQuery.title}).success(function(p){
+                    if(p){
+                        _this.context.modelState.addError('title', 'There is already a playlist with the same title.');
+                        _this.context.d.reject();
+                    }else{
+                        _this.db('playlist').update({_id: id}, { $set: { title: actionQuery.title } }).success(function(){
+                            _this.context.d.resolve();
+                        });
+                    }
+                });
             });
-        });
+        }
     },
 
     /**
